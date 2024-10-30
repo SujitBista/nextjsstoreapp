@@ -1,7 +1,7 @@
-import MyForm from "../components/MyForm";
+import Product from "../components/Product";
 
 export default function Home() {
   return (
-    <MyForm />
+    <Product />
   );
 }

@@ -1,28 +1,23 @@
-// pages/api/createDocument.js
-import dbConnect from '../../lib/mongodb';
+// app/api/createDocument/route.js
 
-export default async function handler(req, res) {
-  // Only allow POST requests
-  if (req.method === 'POST') {
-    try {
-      // Connect to the database
-      await dbConnect();
+import { NextResponse } from 'next/server';
+import dbConnect from '../../../lib/mongodb';
+import clientPromise from '../../../lib/mongodbClient';
 
-      // Get the collection and insert data
-      const { name, qty, price } = req.body; // assume `name`, `qty` and `price` are fields in your form data
-      const client = await clientPromise;
-      const db = client.db("storeapp");
-      const collection = db.collection("storeapp");
+export async function POST(request) {
+  try {
+    await dbConnect();
+    const body = await request.json();
+    const { name, qty, price } = body;
 
-      // Insert form data into the collection
-      const result = await collection.insertOne({ name, qty, price });
+    const client = await clientPromise;
+    const db = client.db("storeapp");
+    const collection = db.collection("storeapp");
 
-      // Send response back to client
-      res.status(200).json({ message: 'Document created successfully!', result });
-    } catch (error) {
-      res.status(500).json({ message: 'Error creating document', error });
-    }
-  } else {
-    res.status(405).json({ message: 'Method not allowed' });
+    const result = await collection.insertOne({ name, qty, price });
+    return NextResponse.json({ message: 'Document created successfully!', result });
+  } catch (error) {
+    console.error('Error creating document:', error);
+    return NextResponse.json({ message: 'Error creating document', error: error.message }, { status: 500 });
   }
 }

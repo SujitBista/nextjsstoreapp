@@ -2,9 +2,12 @@
 import React from 'react';
 
 const MyForm = () => {
+  const handleClick=() => {
+    
+  }
   return (
     <div className="form-container">
-      <form>
+      <form onClick={handleClick}>
         <div className="form-group">
           <label htmlFor="name">Name:</label>
           <input type="text" id="name" name="name" required />
